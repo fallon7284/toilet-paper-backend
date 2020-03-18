@@ -32,6 +32,7 @@ const fetchFromYelp = async ({ lat, lng }) => {
   tpData.forEach(data => {
     normal[data.yelpId].yelpId = data.yelpId;
     normal[data.yelpId].hasTPInStock = data.hasTPInStock;
+    normal[data.yelpId].updatedAt = data.updatedAt;
   });
   yelpResultsArray = Object.values(normal);
   return yelpResultsArray;
