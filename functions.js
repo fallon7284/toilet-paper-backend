@@ -1,30 +1,40 @@
 const { yelpKey } = require("./secrets");
 const yelp = require("yelp-fusion");
 const Stores = require("./db/stores");
+const NodeCache = require("node-cache");
+const $cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 
 const fetchFromYelp = async ({ lat, lng }) => {
-  searchRequest = {
-    latitude: lat,
-    longitude: lng,
-    categories: "pharmacy,grocery,convenience",
-    limit: 50
-  };
-
-  const client = yelp.client(yelpKey);
-  const yelpResultsArray = await client.search(searchRequest).then(response => {
-    return response.jsonBody.businesses;
-  });
-  const normalizedResults = yelpResultsArray.reduce((accum, store) => {
-    accum[store.id] = store;
+  let yelpResultsArray = $cache.get(
+    `lat${Number(lat).toFixed(2)}lng${Number(lng).toFixed(2)}`
+  );
+  if (!yelpResultsArray) {
+    searchRequest = {
+      latitude: lat,
+      longitude: lng,
+      categories: "pharmacy,grocery,convenience",
+      limit: 50
+    };
+    const client = yelp.client(yelpKey);
+    yelpResultsArray = await client.search(searchRequest).then(response => {
+      return response.jsonBody.businesses;
+    });
+    $cache.set(
+      `lat${Number(lat).toFixed(2)}lng${Number(lng).toFixed(2)}`,
+      yelpResultsArray
+    );
+  }
+  const normal = yelpResultsArray.reduce((accum, item) => {
+    accum[item.id] = item;
     return accum;
   }, {});
-  const tpData = await fetchFromDb(normalizedResults);
-  tpData.forEach(store => {
-    let entry = normalizedResults[store.yelpId];
-    entry.hasTPInStock = store.hasTPInStock;
-    entry.updatedAt = store.updatedAt;
+  const tpData = await fetchFromDb(normal);
+  tpData.forEach(data => {
+    normal[data.yelpId].yelpId = data.yelpId;
+    normal[data.yelpId].hasTPInStock = data.hasTPInStock;
   });
-  return Object.values(normalizedResults);
+  yelpResultsArray = Object.values(normal);
+  return yelpResultsArray;
 };
 
 const fetchFromDb = async stores => {
