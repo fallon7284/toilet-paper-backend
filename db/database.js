@@ -23,4 +23,6 @@ const db = new Sequelize(
   }
 );
 
+console.log("THIS IS THE DATABASE INSTANCE", db);
+
 module.exports = db;
