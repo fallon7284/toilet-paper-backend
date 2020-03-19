@@ -1,4 +1,4 @@
-const { yelpKey } = require("./secrets");
+const yelpKey = process.env.YELP_KEY;
 const yelp = require("yelp-fusion");
 const Stores = require("./db/stores");
 const NodeCache = require("node-cache");
