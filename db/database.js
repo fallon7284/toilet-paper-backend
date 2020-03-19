@@ -6,8 +6,6 @@ const chalk = require("chalk");
 const Sequelize = require("sequelize");
 const pkg = require("../package.json");
 
-console.log(chalk.blueBright(process.env.DATABASE_URL));
-
 // We'll need to reset the database many times while we're testing, and
 // it'd be a major bummer if we lost all of the data that we made while
 // playing aound with the app in the browser. We'll check to see if the node
@@ -22,7 +20,5 @@ const db = new Sequelize(
     logging: false
   }
 );
-
-console.log("THIS IS THE DATABASE INSTANCE", db);
 
 module.exports = db;
