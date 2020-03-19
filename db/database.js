@@ -6,7 +6,7 @@ const chalk = require("chalk");
 const Sequelize = require("sequelize");
 const pkg = require("../package.json");
 
-console.log(process.env.DATABASE_URL);
+console.log(chalk.blueBright(process.env.DATABASE_URL));
 
 // We'll need to reset the database many times while we're testing, and
 // it'd be a major bummer if we lost all of the data that we made while
