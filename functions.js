@@ -4,6 +4,17 @@ const Stores = require("./db/stores");
 const NodeCache = require("node-cache");
 const $cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 
+const updateDb = async (yelpId, tpAmount) => {
+  const store = await Stores.findOne({
+    where: {
+      yelpId: yelpId
+    }
+  });
+  store.hasTPInStock = tpAmount;
+  store.save();
+  return store;
+};
+
 const fetchFromYelp = async ({ lat, lng }) => {
   let yelpResultsArray = $cache.get(
     `lat${Number(lat).toFixed(2)}lng${Number(lng).toFixed(2)}`
@@ -63,22 +74,4 @@ const postYelpResults = async (stores, hasTp = 0) => {
   return newRows;
 };
 
-const getDistance = (currLat, currLong, destLat, destLong) => {
-  function toRad(x) {
-    return (x * Math.PI) / 180;
-  }
-  const R = 6371;
-  const dLat = toRad(currLat - destLat);
-  const dLon = toRad(currLong - destLong);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(currLat)) *
-      Math.cos(toRad(destLat)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const result = R * c;
-  return result.toFixed(1);
-};
-
-module.exports = { fetchFromYelp, postYelpResults, fetchFromDb };
+module.exports = { fetchFromYelp, postYelpResults, fetchFromDb, updateDb };
