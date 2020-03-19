@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "seed": "node seed.js"
+    "start": "node ./bin/www",
+    "seed": "node seed.js",
+    "heroku-postbuild": "node seed.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
