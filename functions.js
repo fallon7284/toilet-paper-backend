@@ -5,8 +5,6 @@ const NodeCache = require("node-cache");
 const $cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 
 const updateDb = async (yelpId, tpAmount) => {
-  const logStore = await Stores.findAll();
-  console.log(logStore);
   const store = await Stores.findOne({
     where: {
       yelpId: yelpId
@@ -52,6 +50,9 @@ const fetchFromYelp = async ({ lat, lng }) => {
 };
 
 const fetchFromDb = async stores => {
+  console.log("calls fetch from db");
+  const logStore = await Stores.findAll();
+  console.log(logStore);
   const tpData = await Stores.findAll({
     where: {
       yelpId: Object.keys(stores)
