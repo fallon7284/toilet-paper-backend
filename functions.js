@@ -4,6 +4,8 @@ const Stores = require("./db/stores");
 const NodeCache = require("node-cache");
 const $cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 
+console.log(Stores);
+
 const updateDb = async (yelpId, tpAmount) => {
   const store = await Stores.findOne({
     where: {
