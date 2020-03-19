@@ -35,10 +35,12 @@ const fetchFromYelp = async ({ lat, lng }) => {
       yelpResultsArray
     );
   }
+  yelpResultsArray.forEach(store => {});
   const normal = yelpResultsArray.reduce((accum, item) => {
     accum[item.id] = item;
     return accum;
   }, {});
+  const didPost = await postYelpResults(yelpResultsArray);
   const tpData = await fetchFromDb(normal);
   tpData.forEach(data => {
     normal[data.yelpId].yelpId = data.yelpId;
@@ -51,21 +53,20 @@ const fetchFromYelp = async ({ lat, lng }) => {
 
 const fetchFromDb = async stores => {
   console.log("calls fetch from db");
-  const logStore = await Stores.findAll();
-  console.log(logStore);
   const tpData = await Stores.findAll({
     where: {
       yelpId: Object.keys(stores)
     }
   });
+
   return tpData;
 };
 
-const postYelpResults = async (stores, hasTp = 0) => {
+const postYelpResults = async stores => {
   let newRows = 0;
   Object.values(stores).forEach(async store => {
     const formattedStore = {
-      hasTPInStock: hasTp,
+      hasTPInStock: 0,
       yelpId: store.id
     };
     let updated = await Stores.findOrCreate({
