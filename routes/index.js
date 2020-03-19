@@ -24,7 +24,6 @@ router.get("/:location", async function(req, res, next) {
 router.post("/update", async function(req, res, next) {
   try {
     const updatedStore = await updateDb(req.query.yelpId, req.query.tpAmount);
-    console.log(updatedStore);
     res.send(updatedStore);
   } catch (err) {
     console.log(err);
