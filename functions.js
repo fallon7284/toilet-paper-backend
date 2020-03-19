@@ -52,7 +52,6 @@ const fetchFromYelp = async ({ lat, lng }) => {
 };
 
 const fetchFromDb = async stores => {
-  console.log("calls fetch from db");
   const tpData = await Stores.findAll({
     where: {
       yelpId: Object.keys(stores)
