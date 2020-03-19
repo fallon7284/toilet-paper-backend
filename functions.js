@@ -40,7 +40,7 @@ const fetchFromYelp = async ({ lat, lng }) => {
     accum[item.id] = item;
     return accum;
   }, {});
-  const didPost = await postYelpResults(yelpResultsArray);
+  const didPost = await postYelpResults(normal);
   const tpData = await fetchFromDb(normal);
   tpData.forEach(data => {
     normal[data.yelpId].yelpId = data.yelpId;
